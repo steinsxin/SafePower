@@ -17,36 +17,36 @@
     Motor_SpeedControl(&left_shoulder, 1000);
 */
 
-static void GetAngle(MotorDevice *motor) {
+static void motor_lk_get_angle(MotorDevice *motor) {
     LK_GetMultiTurnAngle(motor->can_bus, motor->id);
 }
 
-static void SpeedControl(MotorDevice *motor, int32_t speed) {
+static void motor_lk_speed_control(MotorDevice *motor, int32_t speed) {
     LK_SpeedControl(motor->can_bus, motor->id, speed);
 }
 
-static void TorqueControl(MotorDevice *motor, int16_t torque) {
+static void motor_lk_torque_control(MotorDevice *motor, int16_t torque) {
     LK_TorqueOpenLoop(motor->can_bus, motor->id, torque);
 }
 
-static void Stop(MotorDevice *motor) {
+static void motor_lk_stop(MotorDevice *motor) {
     LK_StopMotor(motor->can_bus, motor->id);
 }
 
-static void Enable(MotorDevice *motor) {
+static void motor_lk_enable(MotorDevice *motor) {
     LK_EnableMotor(motor->can_bus, motor->id);
 }
 
-static void Disable(MotorDevice *motor) {
+static void motor_lk_disable(MotorDevice *motor) {
     LK_DisableMotor(motor->can_bus, motor->id);
 }
 
 // 定义 LK 电机的操作表
 const MotorOps LKMotorOps = {
-    .get_angle = GetAngle,
-    .speed_control = SpeedControl,
-    .torque_control = TorqueControl,
-    .stop = Stop,
-    .enable = Enable,
-    .disable = Disable
+        .get_angle = motor_lk_get_angle,
+        .speed_control = motor_lk_speed_control,
+        .torque_control = motor_lk_torque_control,
+        .stop = motor_lk_stop,
+        .enable = motor_lk_enable,
+        .disable = motor_lk_disable
 };
