@@ -1,0 +1,8 @@
+//
+// Created by Steins_Xin on 2025/7/29.
+//
+
+#ifndef SAFEPOWER_MOTOR_CONFIG_H
+#define SAFEPOWER_MOTOR_CONFIG_H
+
+#endif //SAFEPOWER_MOTOR_CONFIG_H

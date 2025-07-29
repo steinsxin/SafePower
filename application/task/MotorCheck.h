@@ -11,9 +11,9 @@
 #include "string.h"
 
 /* 应用层 */
-#include "MotorDrive.h"
-#include "LKMotor.h"
-#include "EUMotor.h"
+#include "motor/MotorDrive.h"
+#include "motor/LKMotor.h"
+#include "motor/EUMotor.h"
 
 /* ==================== 超时参数定义 ==================== */
 #define MASTER_CMD_TIMEOUT_MS     50  /* 主控命令超时(ms) */
