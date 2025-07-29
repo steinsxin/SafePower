@@ -2132,9 +2132,9 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd)
 
 #if defined (USB_OTG_FS) || defined (USB_OTG_HS)
 /**
-  * @brief  Set the USB Device high speed test mode.
+  * @brief  Set the USB Device high speed driver mode.
   * @param  hpcd PCD handle
-  * @param  testmode USB Device high speed test mode
+  * @param  testmode USB Device high speed driver mode
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_PCD_SetTestMode(const PCD_HandleTypeDef *hpcd, uint8_t testmode)

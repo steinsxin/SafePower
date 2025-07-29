@@ -66,7 +66,7 @@ void handle_timeout(motor_controller_t* motor, uint32_t now)
                 EU_Get_Angle_CMD(motor->bus, motor->can_id);
                 vTaskDelay(2);
             } else {
-                LK_Speed_CMD(motor->bus, motor->can_id, 0);
+//                LK_Speed_CMD(motor->bus, motor->can_id, 0);
                 vTaskDelay(1);
             }
 

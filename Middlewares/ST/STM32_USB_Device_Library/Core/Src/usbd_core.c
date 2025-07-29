@@ -433,7 +433,7 @@ USBD_StatusTypeDef USBD_Stop(USBD_HandleTypeDef *pdev)
 
 /**
   * @brief  USBD_RunTestMode
-  *         Launch test mode process
+  *         Launch driver mode process
   * @param  pdev: device instance
   * @retval status
   */
@@ -442,7 +442,7 @@ USBD_StatusTypeDef USBD_RunTestMode(USBD_HandleTypeDef *pdev)
 #ifdef USBD_HS_TESTMODE_ENABLE
   USBD_StatusTypeDef ret;
 
-  /* Run USB HS test mode */
+  /* Run USB HS driver mode */
   ret = USBD_LL_SetTestMode(pdev, pdev->dev_test_mode);
 
   return ret;

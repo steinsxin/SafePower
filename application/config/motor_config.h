@@ -57,11 +57,24 @@ typedef enum {
 
 // ==================== 命令 ID ====================
 
-// LK 系列命令
+/**
+ * @brief LK 电机命令枚举
+ */
 typedef enum {
-    LK_CMD_GET_ANGLE     = 0x92,
-    LK_CMD_SPEED_CONTROL = 0xA2,
-    LK_CMD_STOP          = 0x81,
+    LK_CMD_GET_MULTI_TURN_ANGLE = 0x92,           ///< 读取多圈角度
+    LK_CMD_GET_SINGLE_TURN_ANGLE = 0x94,          ///< 读取单圈角度
+    LK_CMD_GET_STATUS_1_AND_ERROR = 0x9A,         ///< 读取电机状态1与错误标志
+    LK_CMD_CLEAR_ERROR_FLAG = 0x9B,               ///< 清除错误标志
+    LK_CMD_GET_STATUS_2 = 0x9C,                   ///< 读取电机状态2
+    LK_CMD_GET_STATUS_3 = 0x9D,                   ///< 读取电机状态3
+
+    LK_CMD_TORQUE_OPEN_LOOP = 0xA0,               ///< 转矩开环控制
+    LK_CMD_TORQUE_CLOSED_LOOP = 0xA1,             ///< 转矩闭环控制
+    LK_CMD_SPEED_CONTROL = 0xA2,                  ///< 速度控制
+
+    LK_CMD_STOP = 0x81,                           ///< 电机停止
+    LK_CMD_DISABLE = 0x80,                        ///< 电机关闭
+    LK_CMD_ENABLE = 0x88                          ///< 电机运行/开启
 } LK_CMD_ID;
 
 // EU 系列命令

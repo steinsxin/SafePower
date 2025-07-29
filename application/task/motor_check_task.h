@@ -11,7 +11,8 @@
 #include "string.h"
 
 /* 应用层 */
-#include "motor_drive.h"
+#include "driver/motor_drive_lk.h"
+#include "driver/motor_drive_eu.h"
 #include "motor_config.h"
 #include "system_config.h"
 
