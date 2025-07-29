@@ -1,16 +1,7 @@
 //
 // Created by Steins_Xin on 2025/3/31.
 //
-#include "USBDevice.h"
-
-
-void usb_device_task(void const * argument){
-    while (1){
-        printf("Hello SteinsXin STM32 HS\r\n");
-//        printf("AWdawd %s","Hello");
-        vTaskDelay(1000);
-    }
-}
+#include "usb_device.h"
 
 /**
  * USB_SendData

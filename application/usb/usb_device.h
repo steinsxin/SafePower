@@ -2,8 +2,8 @@
 // Created by Steins_Xin on 2025/3/31.
 //
 
-#ifndef SAFEPOWER_USBDEVICE_H
-#define SAFEPOWER_USBDEVICE_H
+#ifndef SAFEPOWER_USB_DEVICE_TASK_H
+#define SAFEPOWER_USB_DEVICE_TASK_H
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -16,4 +16,5 @@
 
 extern USBD_HandleTypeDef hUsbDeviceHS;
 int USB_SendData(uint8_t* data, uint16_t len);
-#endif //SAFEPOWER_USBDEVICE_H
+
+#endif //SAFEPOWER_USB_DEVICE_TASK_H

@@ -2,8 +2,8 @@
 // Created by Steins_Xin on 2025/4/2.
 //
 
-#ifndef SAFEPOWER_MOTORDRIVE_H
-#define SAFEPOWER_MOTORDRIVE_H
+#ifndef SAFEPOWER_MOTOR_DRIVE_H
+#define SAFEPOWER_MOTOR_DRIVE_H
 
 
 #include "FreeRTOS.h"
@@ -58,4 +58,4 @@ void EU_Get_Angle_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID);
  */
 void EU_Speed_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID, int32_t speedControl);
 
-#endif //SAFEPOWER_MOTORDRIVE_H
+#endif //SAFEPOWER_MOTOR_DRIVE_H

@@ -1,4 +1,4 @@
-#include "MotorCheck.h"
+#include "motor_check_task.h"
 
 /* ==================== 全局变量 ==================== */
 safety_control_system_t system;

@@ -2,7 +2,7 @@
 // Created by Steins_Xin on 2025/4/2.
 //
 
-#include "MotorDrive.h"
+#include "motor_drive.h"
 
 /* ==================== 静态函数声明 ==================== */
 static void CAN_Send(CAN_HandleTypeDef *hcan, uint32_t CAN_ID, uint8_t *data, uint8_t len);
