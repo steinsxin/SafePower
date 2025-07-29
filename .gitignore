@@ -1,0 +1,5 @@
+/.idea
+# 忽略 cmake-build-debug 文件夹中的所有文件
+/cmake-build-debug
+# 保留 SafePower.hex
+!/cmake-build-debug/SafePower.hex
