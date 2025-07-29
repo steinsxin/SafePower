@@ -3,3 +3,7 @@
 /cmake-build-debug
 # 保留 SafePower.hex
 !/cmake-build-debug/SafePower.hex
+# 忽略project文件
+.mxproject
+.project
+.cproject

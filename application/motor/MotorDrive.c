@@ -15,7 +15,7 @@ static void CAN_Send(CAN_HandleTypeDef *hcan, uint32_t CAN_ID, uint8_t *data, ui
  * @param CAN_ID 电机ID
  */
 void LK_Angle_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID) {
-    uint8_t LK_Motor_Angle[8] = {LK_Angle_Info, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};   // 获取电机角度命令
+    uint8_t LK_Motor_Angle[8] = {LK_CMD_GET_ANGLE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};   // 获取电机角度命令
 
     // 发送电机角度获取命令
     CAN_Send(CAN_Bus, CAN_ID, LK_Motor_Angle, 8);
@@ -27,7 +27,7 @@ void LK_Angle_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID) {
  * @param CAN_ID 电机ID
  */
 void LK_Stop_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID) {
-    uint8_t LK_Motor_Stop[8] = {LK_Stop, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};    // 电机停止命令
+    uint8_t LK_Motor_Stop[8] = {LK_CMD_STOP, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};    // 电机停止命令
 
     // 发送电机停止命令
     CAN_Send(CAN_Bus, CAN_ID, LK_Motor_Stop, 8);
@@ -40,7 +40,7 @@ void LK_Stop_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID) {
  * @param speedControl 速度控制值
  */
 void LK_Speed_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID, int32_t speedControl) {
-    uint8_t LK_Motor_Speed[8] = {LK_Speed_Control, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};   // 电机速度命令
+    uint8_t LK_Motor_Speed[8] = {LK_CMD_SPEED_CONTROL, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};   // 电机速度命令
 
     // 将速度控制值转换为字节数组
     LK_Motor_Speed[4] = *(uint8_t *)(&speedControl);      // 最低字节 (LSB)
@@ -58,7 +58,7 @@ void LK_Speed_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID, int32_t speedCont
  * @param CAN_ID 电机ID
  */
 void EU_Get_Angle_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID){
-    uint8_t EU_Motor_Get_Angle[6] = {EU_Get_Angle, 0x07, 0x00, 0x00, 0x00, 0x00};   // 电机角度命令
+    uint8_t EU_Motor_Get_Angle[6] = {EU_CMD_GET_ANGLE, 0x07, 0x00, 0x00, 0x00, 0x00};   // 电机角度命令
 
     CAN_Send(CAN_Bus,CAN_ID,EU_Motor_Get_Angle,6);
 }
@@ -70,7 +70,7 @@ void EU_Get_Angle_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID){
  * @param speedControl 速度控制值
  */
 void EU_Speed_CMD(CAN_HandleTypeDef *CAN_Bus, uint32_t CAN_ID, int32_t speedControl){
-    uint8_t EU_Motor_Speed[6] = {EU_Speed_Control, 0x09, 0x00, 0x00, 0x00, 0x00};   // 电机速度命令
+    uint8_t EU_Motor_Speed[6] = {EU_CMD_SPEED_CONTROL, 0x09, 0x00, 0x00, 0x00, 0x00};   // 电机速度命令
 
     // 发送电机速度停止命令
     CAN_Send(CAN_Bus,CAN_ID,EU_Motor_Speed,6);

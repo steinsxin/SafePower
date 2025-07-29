@@ -13,23 +13,11 @@
 #include "can.h"
 
 /* 应用层 */
-#include "LKMotor.h"
+#include "motor_config.h"
 
 /* ==================== 外部变量声明 ==================== */
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
-
-/* ==================== 枚举定义 ==================== */
-typedef enum {
-    LK_Angle_Info = 0x92,      // 获取电机角度
-    LK_Speed_Control = 0xA2,   // 速度控制
-    LK_Stop = 0x81,            // 停止电机
-} LK_CMD_ID;
-
-typedef enum {
-    EU_Get_Angle = 0x03,        // 获取角度命令
-    EU_Speed_Control = 0x05,    // 速度控制命令
-} EU_CMD_ID;
 
 /* ==================== 函数声明 ==================== */
 

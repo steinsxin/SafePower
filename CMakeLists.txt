@@ -63,7 +63,10 @@ include_directories(
         USB_DEVICE/App
         USB_DEVICE/Target
         BSP
-        application
+        application/can
+        application/config
+        application/motor
+        application/task
 )
 
 add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F405xx)

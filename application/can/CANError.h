@@ -5,6 +5,7 @@
 #ifndef SAFEPOWER_CANERROR_H
 #define SAFEPOWER_CANERROR_H
 
+#include "can.h"
 
 class CANError{
 

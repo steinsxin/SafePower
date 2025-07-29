@@ -7,7 +7,7 @@
 void usb_device_task(void const * argument){
     while (1){
         printf("Hello SteinsXin STM32 HS\r\n");
-        printf("AWdawd %s","Hello");
+//        printf("AWdawd %s","Hello");
         vTaskDelay(1000);
     }
 }
@@ -35,7 +35,7 @@ int USB_SendData(uint8_t* data, uint16_t len) {
 #ifdef __GNUC__
 #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 #else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE* f)
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE* f)5
 #endif
 
 
