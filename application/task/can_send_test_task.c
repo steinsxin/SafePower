@@ -12,6 +12,7 @@ extern const MotorOps LKMotorOps;
  */
 void can_send_test_task(void const * argument)
 {
+    LED_ON(LED3);
     static MotorDevice left_shoulder_motor = {
             .name = "left_shoulder",
             .type = MOTOR_LK,

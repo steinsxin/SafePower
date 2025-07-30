@@ -334,6 +334,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
  */
 void motor_check_task(void const* argument)
 {
+    LED_ON(LED1);
     safety_system_init(&system);
     while (1) {
 //        safety_monitor_task(&system);

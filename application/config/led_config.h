@@ -24,8 +24,8 @@
 #define LED5_Pin        LED_PC6_Pin
 
 // LED控制宏
-#define LED_ON(led)        HAL_GPIO_WritePin(led##_GPIO_Port, led##_Pin, GPIO_PIN_SET)
-#define LED_OFF(led)       HAL_GPIO_WritePin(led##_GPIO_Port, led##_Pin, GPIO_PIN_RESET)
+#define LED_ON(led)        HAL_GPIO_WritePin(led##_GPIO_Port, led##_Pin, GPIO_PIN_RESET)
+#define LED_OFF(led)       HAL_GPIO_WritePin(led##_GPIO_Port, led##_Pin, GPIO_PIN_SET)
 #define LED_TOGGLE(led)    HAL_GPIO_TogglePin(led##_GPIO_Port, led##_Pin)
 
 #endif //SAFEPOWER_LED_CONFIG_H
