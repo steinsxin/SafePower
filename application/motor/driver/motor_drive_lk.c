@@ -5,7 +5,8 @@
 #include "motor_drive_lk.h"
 
 /**
- * @brief 发送读取多圈角度命令
+ * @brief 多圈角度命令（0x92）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  */
@@ -29,7 +30,8 @@ void LK_HandleMultiTurnAngleFeedback(MotorDevice *motor, const uint8_t *data, ui
 }
 
 /**
- * @brief 发送读取单圈角度命令
+ * @brief 单圈角度命令（0x94）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  */
@@ -53,7 +55,8 @@ void LK_HandleSingleTurnAngleFeedback(MotorDevice *motor, const uint8_t *data, u
 }
 
 /**
- * @brief 发送读取状态1与错误标志命令
+ * @brief 状态1 + 错误标志命令（0x9A）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  */
@@ -77,7 +80,8 @@ void LK_HandleStatus1AndErrorFeedback(MotorDevice *motor, const uint8_t *data, u
 }
 
 /**
- * @brief 发送清除错误标志命令
+ * @brief 清除错误标志命令（0x9B）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  */
@@ -101,7 +105,8 @@ void LK_HandleClearErrorFlagFeedback(MotorDevice *motor, const uint8_t *data, ui
 }
 
 /**
- * @brief 发送读取状态2命令
+ * @brief 状态2命令（0x9C）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  */
@@ -125,7 +130,8 @@ void LK_HandleStatus2Feedback(MotorDevice *motor, const uint8_t *data, uint8_t l
 }
 
 /**
- * @brief 发送读取状态3命令
+ * @brief 状态3命令（0x9D）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  */
@@ -149,7 +155,8 @@ void LK_HandleStatus3Feedback(MotorDevice *motor, const uint8_t *data, uint8_t l
 }
 
 /**
- * @brief 发送转矩开环控制命令
+ * @brief 转矩开环控制命令（0xA0）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  * @param torqueValue 转矩值
@@ -183,7 +190,8 @@ void LK_HandleTorqueOpenLoopFeedback(MotorDevice *motor, const uint8_t *data, ui
 }
 
 /**
- * @brief 发送转矩闭环控制命令
+ * @brief 转矩闭环控制命令（0xA1）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  * @param torqueValue 转矩值
@@ -216,7 +224,8 @@ void LK_HandleTorqueClosedLoopFeedback(MotorDevice *motor, const uint8_t *data, 
 }
 
 /**
- * @brief 发送电机速度控制命令
+ * @brief 速度控制命令（0xA2）
+ *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
  * @param speedControl 速度值
@@ -242,6 +251,89 @@ void LK_SpeedControl(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, int32_t speedC
  * @param len 数据长度
  */
 void LK_HandleSpeedControlFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+
+}
+
+/**
+ * @brief 多圈位置控制命令（0xA4）
+ *
+ * @param CAN_BUS      CAN总线句柄
+ * @param CAN_ID       电机ID
+ * @param angleControl 位置控制值（单位0.01度/LSB，int32_t）
+ * @param maxSpeed     最大速度限制（单位度/秒LSB，uint16_t）
+ */
+void LK_PositionControlMulti(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float angleControl, uint16_t maxSpeed) {
+    uint8_t data[8];
+    memset(data, 0, sizeof(data));
+
+    // 角度转为 0.01度单位整数
+    int32_t angle = (int32_t)(angleControl * 100.0f);
+
+    data[0] = LK_CMD_POSITION_CONTROL_MULTI; // 0xA4
+    data[1] = 0x00;                          // 保留
+
+    data[2] = (uint8_t)(maxSpeed & 0xFF);
+    data[3] = (uint8_t)((maxSpeed >> 8) & 0xFF);
+
+    data[4] = (uint8_t)(angle & 0xFF);
+    data[5] = (uint8_t)((angle >> 8) & 0xFF);
+    data[6] = (uint8_t)((angle >> 16) & 0xFF);
+    data[7] = (uint8_t)((angle >> 24) & 0xFF);
+
+    CAN_Send(CAN_BUS, CAN_ID, data, 8);
+}
+
+/**
+ * @brief 处理电机多圈命令的反馈数据
+ * @param motor 指向对应的电机对象
+ * @param data 指向接收到的CAN数据帧（8字节）
+ * @param len 数据长度
+ */
+void LK_HandlePositionControlMultiFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+
+}
+
+/**
+ * @brief 单圈位置控制命令（0xA6）
+ *
+ * @param CAN_BUS       CAN总线句柄
+ * @param CAN_ID        电机ID
+ * @param angleDegrees  目标角度，单位 度，范围 [0, 359.99]
+ * @param spinDirection 旋转方向，0x00顺时针，0x01逆时针
+ * @param maxSpeed      最大速度限制，单位 度/秒
+ */
+void LK_PositionControlSingle(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float angleControl, uint8_t spinDirection, uint16_t maxSpeed){
+    uint8_t data[8];
+    memset(data, 0, sizeof(data));
+
+    // 限制角度范围在0~359.99度
+    if (angleControl < 0) angleControl = 0;
+    if (angleControl >= 360) angleControl = 359.99f;
+
+    // 角度转为0.01度单位整数
+    uint16_t angle = (uint16_t)(angleControl * 100.0f);
+
+    data[0] = LK_CMD_POSITION_CONTROL_SINGLE;  // 命令字 0xA3 (示例)
+    data[1] = spinDirection;                    // 转动方向 0x00顺时针，0x01逆时针
+
+    data[2] = (uint8_t)(maxSpeed & 0xFF);      // 速度低字节
+    data[3] = (uint8_t)((maxSpeed >> 8) & 0xFF);// 速度高字节
+
+    data[4] = (uint8_t)(angle & 0xFF);  // 角度低字节
+    data[5] = (uint8_t)((angle >> 8) & 0xFF); // 角度高字节
+
+    // data[6], data[7] 保留为0
+
+    CAN_Send(CAN_BUS, CAN_ID, data, 8);
+}
+
+/**
+ * @brief 处理电机单圈命令的反馈数据
+ * @param motor 指向对应的电机对象
+ * @param data 指向接收到的CAN数据帧（8字节）
+ * @param len 数据长度
+ */
+void LK_HandlePositionControlSingleFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
 
 }
 

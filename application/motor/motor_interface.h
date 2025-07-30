@@ -45,6 +45,14 @@ typedef struct {
     void (*stop)(struct MotorDevice *motor);
     void (*enable)(struct MotorDevice *motor);
     void (*disable)(struct MotorDevice *motor);
+
+    // 新增反馈处理函数指针，按命令区分
+    void (*handle_get_angle_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
+    void (*handle_speed_control_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
+    void (*handle_torque_control_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
+    void (*handle_stop_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
+    void (*handle_enable_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
+    void (*handle_disable_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
 } MotorOps;
 
 // 电机状态对象定义

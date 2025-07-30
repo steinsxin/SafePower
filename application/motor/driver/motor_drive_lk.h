@@ -36,6 +36,8 @@ typedef enum {
     LK_CMD_TORQUE_OPEN_LOOP = 0xA0,               ///< 转矩开环控制
     LK_CMD_TORQUE_CLOSED_LOOP = 0xA1,             ///< 转矩闭环控制
     LK_CMD_SPEED_CONTROL = 0xA2,                  ///< 速度控制
+    LK_CMD_POSITION_CONTROL_MULTI = 0xA4,         ///< 位置控制 (多圈)
+    LK_CMD_POSITION_CONTROL_SINGLE = 0xA6,        ///< 位置控制 (单圈)
 
     LK_CMD_STOP = 0x81,                           ///< 电机停止
     LK_CMD_DISABLE = 0x80,                        ///< 电机关闭
@@ -184,6 +186,41 @@ void LK_HandleTorqueClosedLoopFeedback(MotorDevice *motor, const uint8_t *data, 
  */
 void LK_SpeedControl(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, int32_t speedControl);
 void LK_HandleSpeedControlFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len);
+
+/**
+ * @brief 多圈位置控制命令（0xA4）
+ *
+ * - LK_PositionControlMulti：多圈位置控制命令
+ *   @param CAN_BUS      CAN总线句柄
+ *   @param CAN_ID       电机ID
+ *   @param angleControl 位置控制值（单位0.01度/LSB，int32_t）
+ *   @param maxSpeed     最大速度限制（单位度/秒LSB，uint16_t）
+ *
+ * - LK_HandlePositionControlMultiFeedback：解析多圈位置控制反馈
+ *   @param motor 电机对象指针
+ *   @param data  CAN帧数据（8字节）
+ *   @param len   数据长度
+ */
+void LK_PositionControlMulti(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float angleControl, uint16_t maxSpeed);
+void LK_HandlePositionControlMultiFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len);
+
+/**
+ * @brief 单圈位置控制命令（0xA6）
+ *
+ * - LK_PositionControlSingle：单圈位置控制命令
+ *   @param CAN_BUS       CAN总线句柄
+ *   @param CAN_ID        电机ID
+ *   @param angleDegrees  目标角度，单位 度，范围 [0, 359.99]
+ *   @param spinDirection 旋转方向，0x00顺时针，0x01逆时针
+ *   @param maxSpeed      最大速度限制，单位 度/秒
+ *
+ * - LK_HandlePositionControlSingleFeedback：解析单圈位置控制反馈
+ *   @param motor 电机对象指针
+ *   @param data  CAN帧数据（8字节）
+ *   @param len   数据长度
+ */
+void LK_PositionControlSingle(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float angleControl, uint8_t spinDirection, uint16_t maxSpeed);
+void LK_HandlePositionControlSingleFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len);
 
 /**
  * @brief 停止电机命令（0x81）
