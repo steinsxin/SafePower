@@ -338,11 +338,5 @@ void motor_check_task(void const* argument)
     while (1) {
 //        safety_monitor_task(&system);
         vTaskDelay(5);  /* 5ms周期监控 */
-
-        vTaskDelay(500);
-        HAL_GPIO_WritePin(Led18_GPIO_Port, Led18_Pin, GPIO_PIN_SET);
-        vTaskDelay(500);
-        HAL_GPIO_WritePin(Led18_GPIO_Port, Led18_Pin, GPIO_PIN_RESET);
-
     }
 }

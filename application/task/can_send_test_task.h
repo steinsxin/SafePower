@@ -11,5 +11,6 @@
 #include "gpio.h"
 
 #include "motor_interface.h"
+#include "led_config.h"
 
 #endif //SAFEPOWER_CAN_SEND_TEST_TASK_H

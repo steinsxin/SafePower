@@ -7,5 +7,6 @@ void usb_device_task(void const * argument){
     while (1){
         printf("Hello SteinsXin STM32 HS\r\n");
         vTaskDelay(1000);
+        LED_TOGGLE(LED1);
     }
 }

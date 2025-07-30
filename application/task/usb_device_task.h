@@ -9,5 +9,6 @@
 #include "task.h"
 #include "cmsis_os.h"
 #include "usb_device.h"
+#include "led_config.h"
 
 #endif //SAFEPOWER_USB_DEVICE_TASK_H
