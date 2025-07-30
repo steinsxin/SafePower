@@ -32,6 +32,7 @@
 typedef enum {
     MOTOR_LK,
     MOTOR_EU,
+    MOTOR_DM,
     // 后续可以扩展：MOTOR_XXX
 } MotorType;
 
@@ -40,7 +41,8 @@ struct MotorDevice;
 // 定义操作函数接口（行为接口）
 typedef struct {
     void (*get_angle)(struct MotorDevice *motor);
-    void (*speed_control)(struct MotorDevice *motor, int32_t speed);
+    void (*speed_control)(struct MotorDevice *motor, float speed);
+    void (*position_control)(struct MotorDevice *motor, float angleControl, uint16_t maxSpeed);
     void (*torque_control)(struct MotorDevice *motor, int16_t torque);
     void (*stop)(struct MotorDevice *motor);
     void (*enable)(struct MotorDevice *motor);
@@ -49,6 +51,7 @@ typedef struct {
     // 新增反馈处理函数指针，按命令区分
     void (*handle_get_angle_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
     void (*handle_speed_control_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
+    void (*handle_position_control_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
     void (*handle_torque_control_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
     void (*handle_stop_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
     void (*handle_enable_feedback)(struct MotorDevice *motor, const uint8_t *data, uint8_t len);
