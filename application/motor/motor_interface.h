@@ -6,6 +6,7 @@
 #define SAFEPOWER_MOTOR_INTERFACE_H
 
 #include "can.h"
+#include "motor_config.h"
 #include <stdint.h>
 
 /**
@@ -18,7 +19,7 @@
         .ops = &lk_motor_ops,
         .context = NULL,
     };
-    Motor_SpeedControl(&left_shoulder_motor, 1000);
+    Motor_SpeedControl(&left_shoulder_motor, 100);
 */
 
 #define Motor_GetMultiTurnAngle(m)     ((m)->ops->get_angle(m))
@@ -46,9 +47,22 @@ typedef struct {
     void (*disable)(struct MotorDevice *motor);
 } MotorOps;
 
+// 电机状态对象定义
+typedef struct MotorStatus {
+    uint32_t last_heartbeat;        /* 最后心跳时间 */
+    motor_mode_t mode;              /* 当前模式 */
+    /* 时间戳记录 */
+    uint32_t last_master_cmd;   /* 最后主控命令时间 */
+    uint32_t last_motor_resp;   /* 最后电机响应时间 */
+
+    /* 电源控制 */
+    GPIO_TypeDef* mos_port;     /* MOS管控制端口 */
+    uint16_t mos_pin;           /* MOS管控制引脚 */
+} MotorStatus;
+
 // 电机设备对象定义
 typedef struct MotorDevice {
-    const char *name;                  // 电机角色名，如 "left_shoulder"
+    const char *name;                 // 电机角色名，如 "left_shoulder"
     MotorType type;                   // 电机类型
     uint32_t can_id;                  // 电机对应的 CAN ID
     CAN_HandleTypeDef *can_bus;       // CAN 句柄

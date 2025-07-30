@@ -408,7 +408,7 @@ __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t value)
      target, and ensures the compiler doesn't decide to activate any
      optimisations using the logic "value was passed to __builtin_clz, so it
      is non-zero".
-     ARM GCC 7.3 and possibly earlier will optimise this driver away, leaving a
+     ARM GCC 7.3 and possibly earlier will optimise this test away, leaving a
      single CLZ instruction.
    */
   if (value == 0U)

@@ -606,7 +606,7 @@ uint32_t USBD_LL_GetRxDataSize(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 /**
   * @brief  Set High speed Test mode.
   * @param  pdev: Device handle
-  * @param  testmode: driver mode
+  * @param  testmode: test mode
   * @retval USBD Status
   */
 USBD_StatusTypeDef USBD_LL_SetTestMode(USBD_HandleTypeDef *pdev, uint8_t testmode)

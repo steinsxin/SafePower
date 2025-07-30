@@ -328,50 +328,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     }
 }
 
-// 用户传入的 CAN 句柄指针（CAN1 或 CAN2）
-static CAN_HandleTypeDef *can_handle = NULL;
-
-// 自动恢复冷却时间（ms）
-#define CAN_RESTART_DELAY_MS 500
-
-// 最后一次恢复的 tick
-static uint32_t last_restart_tick = 0;
-
-void CAN_ErrorMonitor_Init(CAN_HandleTypeDef *hcan) {
-    can_handle = hcan;
-    last_restart_tick = HAL_GetTick();
-}
-
-void CAN_ErrorMonitor_Task(void) {
-    if (can_handle == NULL) return;
-
-    uint32_t esr = can_handle->Instance->ESR;
-
-    uint8_t tec = (esr >> 16) & 0xFF;
-    uint8_t rec = (esr >> 24) & 0xFF;
-    uint8_t is_boff = esr & CAN_ESR_BOFF;
-
-    // 可选：打印错误计数器（用于调试）
-    // printf("[CAN] TEC: %d, REC: %d, BOFF: %d\r\n", tec, rec, is_boff ? 1 : 0);
-
-    // 如果进入 Bus-Off 状态，进行自动重启
-    if (is_boff && HAL_GetTick() - last_restart_tick > CAN_RESTART_DELAY_MS) {
-//        printf("[CAN] Bus-Off detected. Restarting CAN bus...\r\n");
-
-        HAL_CAN_Stop(can_handle);
-        HAL_CAN_Start(can_handle);
-        HAL_CAN_ActivateNotification(can_handle,
-                                     CAN_IT_RX_FIFO0_MSG_PENDING |
-                                     CAN_IT_RX_FIFO1_MSG_PENDING |
-                                     CAN_IT_TX_MAILBOX_EMPTY |
-                                     CAN_IT_BUSOFF |
-                                     CAN_IT_ERROR_WARNING |
-                                     CAN_IT_ERROR_PASSIVE);
-
-        last_restart_tick = HAL_GetTick();
-    }
-}
-
 /**
  * @brief 电机检查主任务
  * @param argument 任务参数

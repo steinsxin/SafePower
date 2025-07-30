@@ -399,7 +399,7 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE; // Initialised to pdFALSE.
     // priority of the currently executing task was unblocked and a context
     // switch should be performed to ensure the ISR returns to the unblocked
     // task.  In most FreeRTOS ports this is done by simply passing
-    // xHigherPriorityTaskWoken into portYIELD_FROM_ISR(), which will driver the
+    // xHigherPriorityTaskWoken into portYIELD_FROM_ISR(), which will test the
     // variables value, and perform the context switch if necessary.  Check the
     // documentation for the port in use for port specific instructions.
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
@@ -588,7 +588,7 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE;  // Initialised to pdFALSE.
     // priority of the currently executing task was unblocked and a context
     // switch should be performed to ensure the ISR returns to the unblocked
     // task.  In most FreeRTOS ports this is done by simply passing
-    // xHigherPriorityTaskWoken into portYIELD_FROM_ISR(), which will driver the
+    // xHigherPriorityTaskWoken into portYIELD_FROM_ISR(), which will test the
     // variables value, and perform the context switch if necessary.  Check the
     // documentation for the port in use for port specific instructions.
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );

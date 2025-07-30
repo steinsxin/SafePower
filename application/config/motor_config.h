@@ -55,4 +55,15 @@ typedef enum {
     JOINT_GRIPPER         = 7,   // 预留，未使用
 } Motor_Joint_Name;
 
+/**
+ * @brief 电机模式枚举
+ */
+typedef enum {
+    UNKNOWN_MODE,       /* 未知模式 */
+    SPEED_MODE,         /* 速度模式 */
+    POS_MODE,           /* 位置模式 */
+    TOR_MODE,           /* 力矩模式 */
+} motor_mode_t;
+
+
 #endif // SAFEPOWER_MOTOR_CONFIG_H

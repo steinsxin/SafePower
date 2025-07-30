@@ -160,7 +160,7 @@ __ALIGN_BEGIN uint8_t USBD_HS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
 #if (USBD_LPM_ENABLED == 1)
   0x01,                       /*bcdUSB */ /* changed to USB version 2.01
                                              in order to support LPM L1 suspend
-                                             resume driver of USBCV3.0*/
+                                             resume test of USBCV3.0*/
 #else
   0x00,                       /*bcdUSB */
 #endif /* (USBD_LPM_ENABLED == 1) */

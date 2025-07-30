@@ -50,6 +50,7 @@
 osThreadId defaultTaskHandle;
 osThreadId USBDeviceTaskHandle;
 osThreadId MotorCheckTaskHandle;
+osThreadId CANSendTestTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -59,6 +60,7 @@ osThreadId MotorCheckTaskHandle;
 void StartDefaultTask(void const * argument);
 extern void usb_device_task(void const * argument);
 extern void motor_check_task(void const * argument);
+extern void can_send_test_task(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -118,6 +120,10 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(MotorCheckTask, motor_check_task, osPriorityRealtime, 0, 128);
   MotorCheckTaskHandle = osThreadCreate(osThread(MotorCheckTask), NULL);
 
+  /* definition and creation of CANSendTestTask */
+  osThreadDef(CANSendTestTask, can_send_test_task, osPriorityLow, 0, 128);
+  CANSendTestTaskHandle = osThreadCreate(osThread(CANSendTestTask), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -137,7 +143,9 @@ void StartDefaultTask(void const * argument)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
-    vTaskDelete(USBDeviceTaskHandle);
+//    vTaskDelete(USBDeviceTaskHandle);
+//    vTaskDelete(MotorCheckTaskHandle);
+//    vTaskDelete(CANSendTestTaskHandle);
     vTaskDelete(NULL);
   /* USER CODE END StartDefaultTask */
 }
