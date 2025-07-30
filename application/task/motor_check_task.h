@@ -37,7 +37,7 @@ uint32_t get_timer_ticks(void);
  */
 void init_motor_controller(motor_controller_t* ctrl, uint32_t can_id,
                            CAN_HandleTypeDef* bus, motor_state_t state,
-                           GPIO_TypeDef* port, uint16_t pin, motor_type_t type);
+                           GPIO_TypeDef* port, uint16_t pin);
 
 /**
  * @brief 电机电源控制
@@ -77,24 +77,6 @@ void init_eu_motors(safety_control_system_t* sys);
  * @param sys 安全控制系统指针
  */
 void safety_monitor_task(safety_control_system_t* sys);
-
-/**
- * @brief 解码CAN消息
- * @param std_id CAN标准ID
- * @param data CAN数据
- * @param type 电机类型
- * @return 消息类型
- */
-can_msg_type_t decode_can_msg(uint32_t std_id, const uint8_t* data, motor_type_t type);
-
-/**
- * @brief 处理CAN消息
- * @param sys 安全控制系统指针
- * @param std_id CAN标准ID
- * @param data CAN数据
- * @param now 当前时间戳
- */
-void process_can_message(safety_control_system_t* sys, uint32_t std_id, const uint8_t* data, uint32_t now);
 
 
 #endif //SAFEPOWER_MOTOR_CHECK_TASK_H

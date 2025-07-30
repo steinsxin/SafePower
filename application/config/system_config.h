@@ -11,6 +11,7 @@
 #include "gpio.h"
 
 /* ==================== 超时参数定义 ==================== */
+#define SYSTEM_ID 0x100
 #define MASTER_CMD_TIMEOUT_MS     50  /* 主控命令超时(ms) */
 #define MOTOR_RESP_TIMEOUT_MS     50  /* 电机响应超时(ms) */
 #define MAX_RETRY_ATTEMPTS        5   /* 最大重试次数 */
@@ -28,14 +29,6 @@ typedef enum {
     MOTOR_CRITICAL_FAIL  /* 严重故障 */
 } motor_state_t;
 
-/**
- * @brief 电机类型枚举
- */
-typedef enum {
-    UNKNOWN_TYPE,        /* 未知类型 */
-    MOTOR_TYPE_LK,       /* LK电机类型 */
-    MOTOR_TYPE_EU        /* EU电机类型 */
-} motor_type_t;
 
 /**
  * @brief 电机控制器结构体
@@ -57,24 +50,16 @@ typedef struct {
     GPIO_TypeDef* mos_port;     /* MOS管控制端口 */
     uint16_t mos_pin;           /* MOS管控制引脚 */
 
-    /* 类型标识 */
-    motor_type_t type;          /* 电机类型 */
 } motor_controller_t;
 
 /**
- * @brief CAN消息类型枚举
+ * @brief 系统命令枚举
  */
 typedef enum {
-    MSG_UNKNOWN,        /* 未知命令 */
-    MSG_HEARTBEAT,      /* 主控心跳包 */
-    MSG_SPEED_MODE_CMD, /* 速度模式命令 */
-    MSG_POS_MODE_CMD,   /* 位置模式命令 */
-    MSG_SPEED_CMD,      /* 速度命令 */
-    MSG_TORQUE_CMD,     /* 力矩命令 */
-    MSG_MOTOR_FEEDBACK, /* 电机反馈 */
-    MSG_REBOOT_CMD      /* 重启命令 */
-} can_msg_type_t;
-
+    System_CMD_Start = 0x01,        /* 系统启动命令 */
+    System_CMD_Stop = 0x02,         /* 系统关闭命令 */
+    System_CMD_Reset = 0x03         /* 系统重启命令 */
+} System_CMD_ID;
 
 /**
  * @brief 安全控制系统结构体
@@ -82,7 +67,6 @@ typedef enum {
 typedef struct {
     motor_controller_t motors[18];  /* 所有电机控制器(0-6:左臂,7-13:右臂,14-17:腰腿) */
     uint32_t last_heartbeat;        /* 最后心跳时间 */
-    motor_mode_t mode;              /* 当前模式 */
     uint8_t lk_enabled;             /* 是否启用LK电机组 */
     uint8_t eu_enabled;             /* 是否启用EU电机组 */
 } safety_control_system_t;

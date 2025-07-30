@@ -6,8 +6,16 @@
 #define SAFEPOWER_CAN_PROTOCOL_H
 
 // CAN命令解析
+#include "system_config.h"
 #include "driver/motor_drive_lk.h"
 #include "driver/motor_drive_eu.h"
+
+// 判断是否属于某个ID范围
+#define IS_SYSTEM_ID(id)      ((id) == SYSTEM_ID)
+#define IS_LK_LEFT_ID(id)     ((id) >= LEFT_ARM_START_ID && (id) <= LEFT_ARM_END_ID)
+#define IS_LK_RIGHT_ID(id)    ((id) >= RIGHT_ARM_START_ID && (id) <= RIGHT_ARM_END_ID)
+#define IS_EU_ID(id)          ((id) >= WAIST_LEG_START_ID  && (id) <= WAIST_LEG_END_ID)
+
 
 /**
  * @brief 电机 CAN 消息类型枚举（解析分类结果）
@@ -41,5 +49,14 @@ typedef enum {
     CAN_System_MSG_START,                 ///< 系统启动命令
     CAN_System_MSG_RESTART,               ///< 系统重启命令
 } CAN_System_MsgType;
+
+/**
+ * @brief 解析接收到的CAN消息，返回对应的命令类型（电机或系统）
+ * @param can_id   接收到的CAN ID
+ * @param data     接收到的8字节数据
+ * @param msg_type 返回的电机消息类型（可为空）
+ * @param sys_type 返回的系统消息类型（可为空）
+ */
+void Parse_CAN_Message(uint16_t can_id, uint8_t *data, CAN_Motor_MsgType *msg_type, CAN_System_MsgType *sys_type);
 
 #endif //SAFEPOWER_CAN_PROTOCOL_H

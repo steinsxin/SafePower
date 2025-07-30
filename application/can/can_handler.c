@@ -4,11 +4,6 @@
 
 #include "can_handle.h"
 
-// 判断是否属于某个ID范围
-#define IS_LK_LEFT_ID(id)     ((id) >= LEFT_ARM_START_ID && (id) <= LEFT_ARM_END_ID)
-#define IS_LK_RIGHT_ID(id)    ((id) >= RIGHT_ARM_START_ID && (id) <= RIGHT_ARM_END_ID)
-#define IS_EU_ID(id)          ((id) >= WAIST_LEG_START_ID  && (id) <= WAIST_LEG_END_ID)
-
 /**
  * 发送CAN消息
  * @param hcan CAN总线
@@ -39,20 +34,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     CAN_RxHeaderTypeDef header;
 
     if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &header, data) == HAL_OK) {
-        // 进行命令分离
         uint16_t can_id = header.StdId;
-        if (IS_LK_LEFT_ID(can_id)) {
-            // LK 命令解析
-        }
-        else if (IS_LK_RIGHT_ID(can_id)) {
-            // LK命令解析
-        }
-        else if (IS_EU_ID(can_id)) {
-            // EU命令解析
-        }
-        else {
-            // 未知 ID，可记录或忽略
-        }
 
+        CAN_Motor_MsgType motor_msg;
+        CAN_System_MsgType sys_msg;
+
+        Parse_CAN_Message(can_id, data, &motor_msg, &sys_msg);
+
+        // 进行后续处理
     }
 }

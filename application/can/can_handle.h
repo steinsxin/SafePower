@@ -7,6 +7,8 @@
 
 #include "can.h"
 #include "motor_config.h"
+#include "system_config.h"
+#include "can_protocol.h"
 
 /**
  * 发送CAN消息
