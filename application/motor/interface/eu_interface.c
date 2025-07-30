@@ -6,27 +6,27 @@
 #include "driver/motor_drive_eu.h"
 
 //static void motor_eu_get_angle(MotorDevice *motor) {
-//    EU_GetMultiTurnAngle(motor->can_bus, motor->id);
+//    EU_GetMultiTurnAngle(motor->can_bus, motor->can_id);
 //}
 //
 //static void motor_eu_speed_control(MotorDevice *motor, int32_t speed) {
-//    EU_SpeedControl(motor->can_bus, motor->id, speed);
+//    EU_SpeedControl(motor->can_bus, motor->can_id, speed);
 //}
 //
 //static void motor_eu_torque_control(MotorDevice *motor, int16_t torque) {
-//    EU_TorqueOpenLoop(motor->can_bus, motor->id, torque);
+//    EU_TorqueOpenLoop(motor->can_bus, motor->can_id, torque);
 //}
 //
 //static void motor_eu_stop(MotorDevice *motor) {
-//    EU_StopMotor(motor->can_bus, motor->id);
+//    EU_StopMotor(motor->can_bus, motor->can_id);
 //}
 //
 //static void motor_eu_enable(MotorDevice *motor) {
-//    EU_EnableMotor(motor->can_bus, motor->id);
+//    EU_EnableMotor(motor->can_bus, motor->can_id);
 //}
 //
 //static void motor_eu_disable(MotorDevice *motor) {
-//    EU_DisableMotor(motor->can_bus, motor->id);
+//    EU_DisableMotor(motor->can_bus, motor->can_id);
 //}
 //
 //// 定义 EU 电机的操作表

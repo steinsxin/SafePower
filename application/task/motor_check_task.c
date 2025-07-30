@@ -61,9 +61,9 @@ void handle_timeout(motor_controller_t* motor, uint32_t now)
         if (motor->retries < MAX_RETRY_ATTEMPTS) {
             /* 发送零速命令并重试 */
             if (motor->type == MOTOR_TYPE_EU) {
-                EU_Speed_CMD(motor->bus, motor->can_id, 0);
+//                EU_Speed_CMD(motor->bus, motor->can_id, 0);
                 vTaskDelay(2);
-                EU_Get_Angle_CMD(motor->bus, motor->can_id);
+//                EU_Get_Angle_CMD(motor->bus, motor->can_id);
                 vTaskDelay(2);
             } else {
 //                LK_Speed_CMD(motor->bus, motor->can_id, 0);
