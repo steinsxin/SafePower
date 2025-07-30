@@ -113,11 +113,11 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of USBDeviceTask */
-  osThreadDef(USBDeviceTask, usb_device_task, osPriorityNormal, 0, 128);
+  osThreadDef(USBDeviceTask, usb_device_task, osPriorityNormal, 0, 512);
   USBDeviceTaskHandle = osThreadCreate(osThread(USBDeviceTask), NULL);
 
   /* definition and creation of MotorCheckTask */
-  osThreadDef(MotorCheckTask, motor_check_task, osPriorityRealtime, 0, 128);
+  osThreadDef(MotorCheckTask, motor_check_task, osPriorityRealtime, 0, 512);
   MotorCheckTaskHandle = osThreadCreate(osThread(MotorCheckTask), NULL);
 
   /* definition and creation of CANSendTestTask */
