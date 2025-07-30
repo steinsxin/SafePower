@@ -228,18 +228,21 @@ void LK_HandleTorqueClosedLoopFeedback(MotorDevice *motor, const uint8_t *data, 
  *
  * @param CAN_BUS CAN总线句柄
  * @param CAN_ID 电机ID
- * @param speedControl 速度值
+ * @param speedControl 速度值（单位：rpm）
  */
-void LK_SpeedControl(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, int32_t speedControl){
+void LK_SpeedControl(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float speedControl){
     uint8_t data[8] = {0};
 
     data[0] = LK_CMD_SPEED_CONTROL;
 
+    // 将 RPM 转换为协议单位（0.01°/s per LSB）
+    int32_t rpm = (int32_t)(speedControl * 600.0f);
+
     // 拆分 speedControl 成 4 个字节，低位在前（小端序）
-    data[4] = (uint8_t)(speedControl & 0xFF);
-    data[5] = (uint8_t)((speedControl >> 8) & 0xFF);
-    data[6] = (uint8_t)((speedControl >> 16) & 0xFF);
-    data[7] = (uint8_t)((speedControl >> 24) & 0xFF);
+    data[4] = (uint8_t)(rpm & 0xFF);
+    data[5] = (uint8_t)((rpm >> 8) & 0xFF);
+    data[6] = (uint8_t)((rpm >> 16) & 0xFF);
+    data[7] = (uint8_t)((rpm >> 24) & 0xFF);
 
     CAN_Send(CAN_BUS, CAN_ID, data, 8);
 }

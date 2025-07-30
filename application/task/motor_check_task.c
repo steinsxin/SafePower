@@ -315,20 +315,6 @@ void process_can_message(safety_control_system_t* sys, uint32_t std_id, const ui
 }
 
 /**
- * @brief CAN接收中断回调函数
- * @param hcan CAN句柄指针
- */
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
-{
-    uint8_t data[8];
-    CAN_RxHeaderTypeDef header;
-
-    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &header, data) == HAL_OK) {
-        process_can_message(&system, header.StdId, data, get_timer_ticks());
-    }
-}
-
-/**
  * @brief 电机检查主任务
  * @param argument 任务参数
  */

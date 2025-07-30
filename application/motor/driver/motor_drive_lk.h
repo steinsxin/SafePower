@@ -184,7 +184,7 @@ void LK_HandleTorqueClosedLoopFeedback(MotorDevice *motor, const uint8_t *data, 
  *   @param data  CAN帧数据（8字节）
  *   @param len   数据长度
  */
-void LK_SpeedControl(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, int32_t speedControl);
+void LK_SpeedControl(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float speedControl);
 void LK_HandleSpeedControlFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len);
 
 /**

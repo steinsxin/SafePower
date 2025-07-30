@@ -23,7 +23,8 @@ void can_send_test_task(void const * argument)
     };
     Motor_Enable(&left_shoulder_motor);
     while (1) {
-        Motor_SpeedControl(&left_shoulder_motor, 100);
-        vTaskDelay(5);  /* 5ms周期监控 */
+//        Motor_SpeedControl(&left_shoulder_motor, 60);
+        Motor_GetMultiTurnAngle(&left_shoulder_motor);
+        vTaskDelay(50);  /* 5ms周期监控 */
     }
 }
