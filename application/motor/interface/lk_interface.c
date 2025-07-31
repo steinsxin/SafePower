@@ -19,7 +19,7 @@ static void motor_lk_position_control(MotorDevice *motor, float angleControl, ui
 }
 
 static void motor_lk_torque_control(MotorDevice *motor, int16_t torque) {
-    LK_TorqueOpenLoop(motor->can_bus, motor->can_id, torque);
+    LK_TorqueClosedLoop(motor->can_bus, motor->can_id, torque);
 }
 
 static void motor_lk_stop(MotorDevice *motor) {

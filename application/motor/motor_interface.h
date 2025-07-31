@@ -22,12 +22,13 @@
     Motor_SpeedControl(&left_shoulder_motor, 100);
 */
 
-#define Motor_GetMultiTurnAngle(m)     ((m)->ops->get_angle(m))
-#define Motor_SpeedControl(m, s)       ((m)->ops->speed_control(m, s))
-#define Motor_TorqueOpenLoop(m, t)     ((m)->ops->torque_control(m, t))
-#define Motor_Stop(m)                  ((m)->ops->stop(m))
-#define Motor_Enable(m)                ((m)->ops->enable(m))
-#define Motor_Disable(m)               ((m)->ops->disable(m))
+#define Motor_GetMultiTurnAngle(m)          ((m)->ops->get_angle(m))
+#define Motor_PositionControl(m, a, s)      ((m)->ops->position_control(m, a, s))
+#define Motor_SpeedControl(m, s)            ((m)->ops->speed_control(m, s))
+#define Motor_TorqueControl(m, t)          ((m)->ops->torque_control(m, t))
+#define Motor_Stop(m)                       ((m)->ops->stop(m))
+#define Motor_Enable(m)                     ((m)->ops->enable(m))
+#define Motor_Disable(m)                    ((m)->ops->disable(m))
 
 typedef enum {
     MOTOR_LK,
