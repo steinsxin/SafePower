@@ -7,6 +7,7 @@
 
 // CAN命令解析
 #include "system_config.h"
+#include "motor_interface.h"
 #include "driver/motor_drive_lk.h"
 #include "driver/motor_drive_eu.h"
 
@@ -51,6 +52,13 @@ typedef enum {
 } CAN_System_MsgType;
 
 /**
+ * @brief 根据 CAN ID 查找对应的电机对象
+ * @param can_id 接收到的 CAN 标准 ID
+ * @return 指向对应 MotorDevice 的指针，若未找到则返回 NULL
+ */
+MotorDevice *Motor_FindByID(uint16_t can_id);
+
+/**
  * @brief 解析接收到的CAN消息，返回对应的命令类型（电机或系统）
  * @param can_id   接收到的CAN ID
  * @param data     接收到的8字节数据
@@ -58,5 +66,19 @@ typedef enum {
  * @param sys_type 返回的系统消息类型（可为空）
  */
 void Parse_CAN_Message(uint16_t can_id, uint8_t *data, CAN_Motor_MsgType *msg_type, CAN_System_MsgType *sys_type);
+
+/**
+ * @brief 根据解析出的电机消息类型调用对应的反馈处理函数
+ * @param motor    指向目标电机的结构体指针
+ * @param msg_type 电机消息类型（如速度控制反馈、位置控制反馈等）
+ * @param data     接收到的8字节 CAN 数据内容
+ */
+void Handle_Motor_Feedback(MotorDevice *motor, CAN_Motor_MsgType msg_type, const uint8_t *data);
+
+/**
+ * @brief 处理系统类命令（如启动、停止、重启等）
+ * @param sys_msg 系统命令类型
+ */
+void Handle_System_Command(CAN_System_MsgType sys_msg);
 
 #endif //SAFEPOWER_CAN_PROTOCOL_H

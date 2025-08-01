@@ -2,6 +2,8 @@
 #define SAFEPOWER_MOTOR_CONFIG_H
 
 // ==================== 电机数量与范围定义 ====================
+#define MAX_MOTORS 22
+
 #define WAIST_LEG_MOTOR_SIZE     4
 #define WAIST_LEG_START_ID       0x15
 #define WAIST_LEG_END_ID         0x18

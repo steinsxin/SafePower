@@ -19,4 +19,10 @@
  */
 void CAN_Send(CAN_HandleTypeDef *hcan, uint32_t CAN_ID, uint8_t *data, uint8_t len);
 
+/**
+ * @brief 获取当前时间戳
+ * @return 当前时间戳(ms)
+ */
+extern uint32_t get_timer_ticks(void);
+
 #endif //SAFEPOWER_CAN_HANDLE_H

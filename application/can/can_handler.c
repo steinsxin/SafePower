@@ -33,14 +33,27 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     uint8_t data[8];
     CAN_RxHeaderTypeDef header;
 
-    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &header, data) == HAL_OK) {
-        uint16_t can_id = header.StdId;
+    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &header, data) != HAL_OK) {
+        return;
+    }
 
-        CAN_Motor_MsgType motor_msg;
-        CAN_System_MsgType sys_msg;
+    uint16_t can_id = header.StdId;
 
-        Parse_CAN_Message(can_id, data, &motor_msg, &sys_msg);
+    // 解析消息类型
+    CAN_Motor_MsgType motor_msg = CAN_Motor_MSG_UNKNOWN;
+    CAN_System_MsgType sys_msg = CAN_System_MSG_UNKNOWN;
+    Parse_CAN_Message(can_id, data, &motor_msg, &sys_msg);
 
-        // 进行后续处理
+    // 处理电机类消息
+    if (motor_msg != CAN_Motor_MSG_UNKNOWN) {
+        MotorDevice *motor = Motor_FindByID(can_id);
+        if (motor && motor->ops) {
+            Handle_Motor_Feedback(motor, motor_msg, data);
+        }
+    }
+
+    // 处理系统类消息
+    if (sys_msg != CAN_System_MSG_UNKNOWN) {
+        Handle_System_Command(sys_msg);
     }
 }
