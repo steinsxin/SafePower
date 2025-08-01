@@ -37,6 +37,14 @@ typedef enum {
     // 后续可以扩展：MOTOR_XXX
 } MotorType;
 
+// 电机运行状态枚举（如运行、停止、关闭）
+typedef enum {
+    MOTOR_STATE_UNKNOWN = 0,
+    MOTOR_STATE_RUNNING,
+    MOTOR_STATE_STOPPED,
+    MOTOR_STATE_DISABLED
+} motor_run_state_t;
+
 struct MotorDevice;
 
 // 定义操作函数接口（行为接口）
@@ -61,15 +69,29 @@ typedef struct {
 
 // 电机状态对象定义
 typedef struct MotorStatus {
-    uint32_t last_heartbeat;        /* 最后心跳时间 */
-    motor_mode_t mode;              /* 当前模式 */
-    /* 时间戳记录 */
-    uint32_t last_master_cmd;   /* 最后主控命令时间 */
-    uint32_t last_motor_resp;   /* 最后电机响应时间 */
+    // ---- 通用运行信息 ----
+    uint32_t last_master_cmd;        // 主控命令时间戳
+    uint32_t last_motor_resp;        // 电机响应时间戳
 
-    /* 电源控制 */
-    GPIO_TypeDef* mos_port;     /* MOS管控制端口 */
-    uint16_t mos_pin;           /* MOS管控制引脚 */
+    motor_mode_t mode;               // 控制模式（角度、速度等）
+    motor_run_state_t run_state;     // 运行状态（运行/停止/关闭）
+
+    // ---- 电机反馈数据 ----
+    double current_angle_deg;        // 电机角度
+    uint16_t encoder;                // 电机编码器
+    int32_t current_speed_rpm;       // 电机速度
+    int16_t current_torque;          // 电机力矩
+    int16_t current_iq;              // 电机电流
+    int16_t temperature_celsius;     // 电机温度
+    int16_t voltage;                 // 电机电压
+
+    // ---- 电源控制 ----
+    GPIO_TypeDef* mos_port;          // MOS 控制端口
+    uint16_t mos_pin;                // MOS 控制引脚
+
+    // ---- 扩展字段（可选）----
+    uint8_t fault_code;              // 故障码
+    uint8_t warning_code;            // 警告码
 } MotorStatus;
 
 // 电机设备对象定义
@@ -79,12 +101,10 @@ typedef struct MotorDevice {
     uint32_t can_id;                  // 电机对应的 CAN ID
     CAN_HandleTypeDef *can_bus;       // CAN 句柄
     const MotorOps *ops;              // 行为接口集（函数指针表）
+    MotorStatus status;
 
     // 可选字段（便于扩展）
     void *context;                    // 用户上下文，指向配置或状态结构体
-    int32_t last_angle;               // 上次角度读取（可选）
-    uint8_t enabled;                  // 当前使能状态
-    uint8_t fault;                    // 故障标志
 } MotorDevice;
 
 #endif //SAFEPOWER_MOTOR_INTERFACE_H

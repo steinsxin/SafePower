@@ -26,7 +26,23 @@ void LK_GetMultiTurnAngle(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleMultiTurnAngleFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_GET_MULTI_TURN_ANGLE) {
+        return;  // 非法数据
+    }
 
+    int64_t raw_angle = 0;
+
+    // 组装 7 字节有符号整数（小端）
+    raw_angle |= ((int64_t)data[1]) << 0;
+    raw_angle |= ((int64_t)data[2]) << 8;
+    raw_angle |= ((int64_t)data[3]) << 16;
+    raw_angle |= ((int64_t)data[4]) << 24;
+    raw_angle |= ((int64_t)data[5]) << 32;
+    raw_angle |= ((int64_t)data[6]) << 40;
+    raw_angle |= ((int64_t)(int8_t)data[7]) << 48;  // 使用 int8_t 保留符号扩展
+
+    // 存储角度（单位：度）
+    motor->status.current_angle_deg = (double)raw_angle / 100.0;
 }
 
 /**
@@ -51,7 +67,20 @@ void LK_GetSingleTurnAngle(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleSingleTurnAngleFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_GET_SINGLE_TURN_ANGLE) {
+        return;  // 非法数据或命令字不匹配
+    }
 
+    uint32_t raw_circle_angle = 0;
+
+    // 小端解析：低位在低地址
+    raw_circle_angle |= ((uint32_t)data[4]) << 0;
+    raw_circle_angle |= ((uint32_t)data[5]) << 8;
+    raw_circle_angle |= ((uint32_t)data[6]) << 16;
+    raw_circle_angle |= ((uint32_t)data[7]) << 24;
+
+    // 存储角度（单位：度）
+    motor->status.current_angle_deg = (double)raw_circle_angle / 100.0;
 }
 
 /**
@@ -76,7 +105,20 @@ void LK_GetStatus1AndError(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleStatus1AndErrorFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_GET_STATUS_1_AND_ERROR) {
+        return;  // 非法数据
+    }
 
+    // 解析电机温度（int8_t -> int16_t，防止负温度时转为大正数）
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 解析电压（单位 0.1V）
+    uint16_t voltage_raw = ((uint16_t)data[4] << 8) | (uint16_t)data[3];
+    motor->status.voltage = voltage_raw;
+
+    // 错误标志
+    motor->status.fault_code = data[7];
 }
 
 /**
@@ -101,7 +143,20 @@ void LK_ClearErrorFlag(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleClearErrorFlagFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_CLEAR_ERROR_FLAG) {
+        return;  // 非法数据
+    }
 
+    // 解析电机温度（int8_t -> int16_t，防止负温度时转为大正数）
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 解析电压（单位 0.1V）
+    uint16_t voltage_raw = ((uint16_t)data[4] << 8) | (uint16_t)data[3];
+    motor->status.voltage = voltage_raw;
+
+    // 错误标志
+    motor->status.fault_code = data[7];
 }
 
 /**
@@ -126,7 +181,26 @@ void LK_GetStatus2(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleStatus2Feedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_GET_STATUS_2) {
+        return; // 非法数据
+    }
 
+    // 解析电机温度（int8_t）
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 解析转矩电流（int16_t，小端）
+    int16_t iq_raw = (int16_t)(data[2] | (data[3] << 8));
+    motor->status.current_iq = iq_raw;
+
+    // 解析电机速度（int16_t，小端，单位：dps）
+    int16_t speed_raw = (int16_t)(data[4] | (data[5] << 8));
+    motor->status.current_speed_rpm = speed_raw;
+
+    // 解析编码器位置（uint16_t，小端，14bit有效）
+    uint16_t encoder_raw = (uint16_t)(data[6] | (data[7] << 8));
+    encoder_raw &= 0x3FFF;  // 取低14位有效
+    motor->status.encoder = encoder_raw;
 }
 
 /**
@@ -151,7 +225,22 @@ void LK_GetStatus3(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleStatus3Feedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_GET_STATUS_3) {
+        return; // 非法数据
+    }
 
+    // 解析电机温度（int8_t）
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 解析A相电流（int16_t，小端）
+    int16_t iA_raw = (int16_t)(data[2] | (data[3] << 8));
+
+    // 解析B相电流（int16_t，小端）
+    int16_t iB_raw = (int16_t)(data[4] | (data[5] << 8));
+
+    // 解析C相电流（int16_t，小端）
+    int16_t iC_raw = (int16_t)(data[6] | (data[7] << 8));
 }
 
 /**
@@ -186,7 +275,9 @@ void LK_TorqueOpenLoop(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, int16_t torq
  * @param len 数据长度
  */
 void LK_HandleTorqueOpenLoopFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
-
+    if (len < 8 || data[0] != LK_CMD_TORQUE_OPEN_LOOP) {
+        return; // 非法数据
+    }
 }
 
 /**
@@ -220,7 +311,26 @@ void LK_TorqueClosedLoop(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, int16_t to
  * @param len 数据长度
  */
 void LK_HandleTorqueClosedLoopFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_TORQUE_CLOSED_LOOP) {
+        return; // 非法数据
+    }
 
+    // 解析电机温度
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 解析转矩电流 iq（小端）
+    int16_t iq_raw = (int16_t)(data[2] | (data[3] << 8));
+    motor->status.current_iq = iq_raw;
+
+    // 解析电机速度 speed（小端）
+    int16_t speed_raw = (int16_t)(data[4] | (data[5] << 8));
+    motor->status.current_speed_rpm = speed_raw;
+
+    // 解析编码器位置 encoder（小端，14bit有效）
+    uint16_t encoder_raw = (uint16_t)(data[6] | (data[7] << 8));
+    encoder_raw &= 0x3FFF;  // 取低14位有效
+    motor->status.encoder = encoder_raw;
 }
 
 /**
@@ -254,7 +364,26 @@ void LK_SpeedControl(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float speedCon
  * @param len 数据长度
  */
 void LK_HandleSpeedControlFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_SPEED_CONTROL) {
+        return; // 非法数据
+    }
 
+    // 电机温度
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 转矩电流 iq（小端）
+    int16_t iq_raw = (int16_t)(data[2] | (data[3] << 8));
+    motor->status.current_iq = iq_raw;
+
+    // 转速 speed（小端）
+    int16_t speed_raw = (int16_t)(data[4] | (data[5] << 8));
+    motor->status.current_speed_rpm = speed_raw;
+
+    // 编码器位置 encoder（小端，14bit有效）
+    uint16_t encoder_raw = (uint16_t)(data[6] | (data[7] << 8));
+    encoder_raw &= 0x3FFF;  // 清除高2位，仅保留14位有效数据
+    motor->status.encoder = encoder_raw;
 }
 
 /**
@@ -293,7 +422,26 @@ void LK_PositionControlMulti(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float 
  * @param len 数据长度
  */
 void LK_HandlePositionControlMultiFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_POSITION_CONTROL_MULTI) {
+        return; // 非法数据
+    }
 
+    // 电机温度
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 转矩电流 iq（小端）
+    int16_t iq_raw = (int16_t)(data[2] | (data[3] << 8));
+    motor->status.current_iq = iq_raw;
+
+    // 转速 speed（小端）
+    int16_t speed_raw = (int16_t)(data[4] | (data[5] << 8));
+    motor->status.current_speed_rpm = speed_raw;
+
+    // 编码器位置 encoder（小端，14bit有效）
+    uint16_t encoder_raw = (uint16_t)(data[6] | (data[7] << 8));
+    encoder_raw &= 0x3FFF;  // 保留14位有效数据
+    motor->status.encoder = encoder_raw;
 }
 
 /**
@@ -337,7 +485,26 @@ void LK_PositionControlSingle(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID, float
  * @param len 数据长度
  */
 void LK_HandlePositionControlSingleFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
+    if (len < 8 || data[0] != LK_CMD_POSITION_CONTROL_SINGLE) {
+        return; // 非法数据
+    }
 
+    // 电机温度
+    int8_t temp_raw = (int8_t)data[1];
+    motor->status.temperature_celsius = (int16_t)temp_raw;
+
+    // 转矩电流 iq（小端）
+    int16_t iq_raw = (int16_t)(data[2] | (data[3] << 8));
+    motor->status.current_iq = iq_raw;
+
+    // 转速 speed（小端）
+    int16_t speed_raw = (int16_t)(data[4] | (data[5] << 8));
+    motor->status.current_speed_rpm = speed_raw;
+
+    // 编码器位置 encoder（小端，14bit有效）
+    uint16_t encoder_raw = (uint16_t)(data[6] | (data[7] << 8));
+    encoder_raw &= 0x3FFF;  // 保留14位有效数据
+    motor->status.encoder = encoder_raw;
 }
 
 /**
@@ -361,7 +528,9 @@ void LK_StopMotor(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleStopMotorFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
-
+    if (len < 8 || data[0] != LK_CMD_STOP) {
+        return; // 非法数据
+    }
 }
 
 /**
@@ -385,7 +554,9 @@ void LK_DisableMotor(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleDisableMotorFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
-
+    if (len < 8 || data[0] != LK_CMD_DISABLE) {
+        return; // 非法数据
+    }
 }
 
 /**
@@ -409,5 +580,7 @@ void LK_EnableMotor(CAN_HandleTypeDef *CAN_BUS, uint32_t CAN_ID){
  * @param len 数据长度
  */
 void LK_HandleEnableMotorFeedback(MotorDevice *motor, const uint8_t *data, uint8_t len){
-
+    if (len < 8 || data[0] != LK_CMD_ENABLE) {
+        return; // 非法数据
+    }
 }
